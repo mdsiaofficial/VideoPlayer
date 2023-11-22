@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Player</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f4f4f4;
+    }
+
+    #video-container {
+      position: relative;
+    }
+
+    video {
+      width: 100%;
+      height: auto;
+    }
+
+    #playlist {
+      list-style: none;
+      padding: 0;
+      margin: 10px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    #playlist li {
+      cursor: pointer;
+      padding: 8px;
+      border-bottom: 1px solid #ccc;
+      background-color: #fff;
+    }
+
+    #playlist li:hover {
+      background-color: #e0e0e0;
+    }
+
+    #controls {
+      display: flex;
+      justify-content: space-between;
+      margin: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div id="video-container">
+    <video id="video" controls>
+      Your browser does not support the video tag.
+    </video>
+  </div>
+
+  <div>
+    <ul id="playlist"></ul>
+  </div>
+  
+  <div id="controls">
+    <input type="file" id="fileInput" accept="video/*" multiple />
+    <!-- <button id="folderInput">Add Folder</button> -->
+  </div>
+
+  <script>
+    const video = document.getElementById('video');
+    const playlist = document.getElementById('playlist');
+    const fileInput = document.getElementById('fileInput');
+    const folderInput = document.getElementById('folderInput');
+
+    fileInput.addEventListener('change', handleFileSelect);
+    folderInput.addEventListener('click', openFolderDialog);
+
+    function handleFileSelect(event) {
+      const files = event.target.files;
+      if (files.length > 0) {
+        clearPlaylist();
+        for (const file of files) {
+          addVideoToPlaylist(file);
+        }
+        playVideo(files[0]);
+      }
+    }
+
+    function openFolderDialog() {
+      alert("Folder selection is not supported in browsers due to security restrictions. Please select video files individually.");
+    }
+
+    function addVideoToPlaylist(file) {
+      const listItem = document.createElement('li');
+      listItem.textContent = file.name;
+      listItem.addEventListener('click', () => playVideo(file));
+      playlist.appendChild(listItem);
+    }
+
+    function playVideo(file) {
+      const videoURL = URL.createObjectURL(file);
+      video.src = videoURL;
+    }
+
+    function clearPlaylist() {
+      playlist.innerHTML = '';
+    }
+  </script>
+</body>
+</html>
