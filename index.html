@@ -3,18 +3,193 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
-    <title>Custom Video Player</title>
+    <title>Video Player</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+
+        #video-container {
+            position: relative;
+            width: 80%;
+            max-width: 800px;
+        }
+
+        video {
+            width: 100%;
+            display: block;
+        }
+
+        #controls {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        #playlist {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 200px;
+            background-color: rgba(0, 0, 0, 0.7);
+            overflow-y: auto;
+            max-height: 300px;
+            padding: 10px;
+            box-sizing: border-box;
+            color: #fff;
+        }
+
+        #open-button {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            padding: 10px;
+            background-color: #3498db;
+            color: #fff;
+            cursor: pointer;
+            border: none;
+        }
+
+        #file-input {
+            display: none;
+        }
+    </style>
 </head>
 <body>
-    <div id="video-container">
-        <video id="video" controls></video>
-        <div id="playlist-container">
-            <ul id="playlist"></ul>
-        </div>
-    </div>
-    <button id="openButton" onclick="openVideos()">Open Videos</button>
 
-    <script src="script.js"></script>
+<div id="video-container">
+    <video id="video" controls>
+        Your browser does not support the video tag.
+    </video>
+    <div id="controls">
+        <button id="playpause">Play/Pause</button>
+        <input type="range" id="seek-bar" value="0">
+        <button id="volume">Mute</button>
+        <input type="range" id="volume-bar" value="100">
+        <button id="full-screen">Full Screen</button>
+    </div>
+    <div id="playlist"></div>
+    <button id="open-button" onclick="openFile()">Open Videos</button>
+    <input type="file" id="file-input" webkitdirectory directory multiple>
+</div>
+
+<script>
+    const video = document.getElementById('video');
+    const playPauseButton = document.getElementById('playpause');
+    const seekBar = document.getElementById('seek-bar');
+    const volumeButton = document.getElementById('volume');
+    const volumeBar = document.getElementById('volume-bar');
+    const fullScreenButton = document.getElementById('full-screen');
+    const playlistContainer = document.getElementById('playlist');
+    const openButton = document.getElementById('open-button');
+    const fileInput = document.getElementById('file-input');
+
+    let isVideoMuted = false;
+
+    function openFile() {
+        fileInput.click();
+    }
+
+    fileInput.addEventListener('change', handleFileSelect);
+
+    function handleFileSelect(event) {
+        const files = event.target.files;
+        if (files.length > 0) {
+            for (const file of files) {
+                addToPlaylist(file);
+            }
+            openButton.style.display = 'none';
+        }
+    }
+
+    function addToPlaylist(file) {
+        const videoSource = document.createElement('source');
+        videoSource.src = URL.createObjectURL(file);
+        videoSource.type = 'video/mp4';
+
+        video.appendChild(videoSource);
+
+        const playlistItem = document.createElement('div');
+        playlistItem.textContent = file.name;
+        playlistItem.addEventListener('click', () => playVideoFromPlaylist(videoSource));
+        playlistContainer.appendChild(playlistItem);
+    }
+
+    function playVideoFromPlaylist(source) {
+        video.src = source.src;
+        video.load();
+        video.play();
+    }
+
+    playPauseButton.addEventListener('click', togglePlayPause);
+    video.addEventListener('click', togglePlayPause);
+
+    function togglePlayPause() {
+        if (video.paused || video.ended) {
+            video.play();
+        } else {
+            video.pause();
+        }
+    }
+
+    video.addEventListener('timeupdate', updateSeekBar);
+
+    function updateSeekBar() {
+        const value = (video.currentTime / video.duration) * 100;
+        seekBar.value = value;
+    }
+
+    seekBar.addEventListener('input', () => {
+        const seekTime = (seekBar.value * video.duration) / 100;
+        video.currentTime = seekTime;
+    });
+
+    volumeButton.addEventListener('click', toggleMute);
+
+    function toggleMute() {
+        if (isVideoMuted) {
+            video.muted = false;
+            volumeButton.textContent = 'Mute';
+        } else {
+            video.muted = true;
+            volumeButton.textContent = 'Unmute';
+        }
+
+        isVideoMuted = !isVideoMuted;
+    }
+
+    volumeBar.addEventListener('input', () => {
+        const volume = volumeBar.value / 100;
+        video.volume = volume;
+    });
+
+    fullScreenButton.addEventListener('click', toggleFullScreen);
+
+    function toggleFullScreen() {
+        if (video.requestFullscreen) {
+            video.requestFullscreen();
+        } else if (video.mozRequestFullScreen) { /* Firefox */
+            video.mozRequestFullScreen();
+        } else if (video.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+            video.webkitRequestFullscreen();
+        } else if (video.msRequestFullscreen) { /* IE/Edge */
+            video.msRequestFullscreen();
+        }
+    }
+</script>
+
 </body>
 </html>
