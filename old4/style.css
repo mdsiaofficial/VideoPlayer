@@ -1,0 +1,49 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+.video-container {
+    position: relative;
+    max-width: 800px;
+    margin: auto;
+}
+
+video {
+    width: 100%;
+    display: block;
+}
+
+.controls {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: space-around;
+    padding: 5px;
+}
+
+.controls button {
+    background-color: #fff;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+}
+
+.playlist-container {
+    position: fixed;
+    top: 0;
+    right: 0;
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.5);
+    text-align: right;
+}
+
+#openFileBtn {
+    background-color: #fff;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+}

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Custom Video Player</title>
+</head>
+<body>
+    <div class="video-container">
+        <video id="videoPlayer" controls>
+            Your browser does not support the video tag.
+        </video>
+        <div class="controls">
+            <button id="playPauseBtn">Play/Pause</button>
+            <button id="stopBtn">Stop</button>
+            <button id="prevBtn">Previous</button>
+            <button id="nextBtn">Next</button>
+        </div>
+    </div>
+    <div class="playlist-container">
+        <button id="openFileBtn">Open File/Folder</button>
+        <ul id="playlist"></ul>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

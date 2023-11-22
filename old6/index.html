@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Player with Playlist</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    #video-container {
+      width: 90%;
+      margin: auto;
+      position: relative;
+      overflow: hidden;
+      padding-bottom: 56.25%; /* 16:9 aspect ratio */
+      background-color: #000;
+    }
+
+    #video {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    #playlist {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: fixed;
+      bottom: 0;
+      width: 90%;
+      margin: 20px auto;
+      background-color: #333;
+      padding: 10px;
+      border-radius: 10px;
+    }
+
+    #playlist input {
+      margin-right: 10px;
+    }
+
+    #playlist button {
+      padding: 8px 16px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #playlist button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <div id="video-container">
+    <video id="video" controls>
+      <!-- Video source will be added dynamically -->
+    </video>
+  </div>
+
+  <div id="playlist">
+    <input type="text" id="videoUrl" placeholder="Enter video URL">
+    <button onclick="addVideo()">Add to Playlist</button>
+    <button onclick="clearPlaylist()">Clear Playlist</button>
+  </div>
+
+  <script>
+    const videoPlayer = document.getElementById('video');
+    const playlist = [];
+
+    function addVideo() {
+      const videoUrl = document.getElementById('videoUrl').value.trim();
+
+      if (videoUrl !== '') {
+        playlist.push(videoUrl);
+        document.getElementById('videoUrl').value = '';
+        updatePlaylist();
+      }
+    }
+
+    function clearPlaylist() {
+      playlist.length = 0;
+      updatePlaylist();
+    }
+
+    function updatePlaylist() {
+      const playlistElement = document.getElementById('playlist');
+      playlistElement.innerHTML = '';
+
+      playlist.forEach((videoUrl, index) => {
+        const listItem = document.createElement('div');
+        listItem.innerText = `Video ${index + 1}`;
+        listItem.addEventListener('click', () => playVideo(videoUrl));
+        playlistElement.appendChild(listItem);
+      });
+    }
+
+    function playVideo(videoUrl) {
+      videoPlayer.src = videoUrl;
+      videoPlayer.load();
+      videoPlayer.play();
+    }
+    </script>
+  </body>
+</html>

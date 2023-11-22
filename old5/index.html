@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Player</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        #video-container {
+            position: relative;
+            width: 70%;
+            margin: auto;
+        }
+
+        #video-player {
+            width: 100%;
+        }
+
+        #playlist {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 30%;
+            background-color: #f4f4f4;
+            padding: 10px;
+            box-sizing: border-box;
+            overflow-y: auto;
+            max-height: 100vh;
+        }
+
+        #controls {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            padding: 10px;
+            background-color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div id="video-container">
+        <video id="video-player" controls></video>
+        <div id="controls">
+            <button onclick="playPause()">Play/Pause</button>
+            <input type="range" id="volume" min="0" max="1" step="0.1" value="1" onchange="setVolume()">
+        </div>
+    </div>
+    <div id="playlist"></div>
+    <button onclick="openFile()">Open File/Folder</button>
+
+    <script>
+        const videoPlayer = document.getElementById('video-player');
+        const playlistContainer = document.getElementById('playlist');
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.multiple = true;
+        fileInput.style.display = 'none';
+
+        function openFile() {
+            fileInput.click();
+        }
+
+        fileInput.addEventListener('change', function () {
+            const files = fileInput.files;
+            addToPlaylist(files);
+            fileInput.value = ''; // Reset the input to allow selecting the same file again
+        });
+
+        function addToPlaylist(files) {
+            for (const file of files) {
+                const video = document.createElement('video');
+                video.src = URL.createObjectURL(file);
+                video.controls = false;
+                video.classList.add('playlist-item');
+                video.addEventListener('click', function () {
+                    playVideo(video.src);
+                });
+                playlistContainer.appendChild(video);
+            }
+        }
+
+        function playVideo(source) {
+            videoPlayer.src = source;
+            videoPlayer.play();
+        }
+
+        function playPause() {
+            if (videoPlayer.paused) {
+                videoPlayer.play();
+            } else {
+                videoPlayer.pause();
+            }
+        }
+
+        function setVolume() {
+            videoPlayer.volume = document.getElementById('volume').value;
+        }
+    </script>
+</body>
+</html>
+
+
+<!-- create a video player in html + CSS + JavaScript, which will play videos in browser. 
+Features it must have:
+1. it will ask to add one or more videos to add to the playlist.
+2. playlist will align in the bottom of the video player.
+3. video player will take the 90% space of the screen and it must be responsive for all type of screens.
+4. when i added videos to the playlist, it will ask again for adding new videos to playlist or clear all. -->
